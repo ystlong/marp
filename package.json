@@ -50,6 +50,9 @@
     "markdown-it-emoji": "^1.1.0",
     "markdown-it-katex": "^2.0.1",
     "markdown-it-mark": "^2.0.0",
+    "markdown-it-plantuml" : "^1.2.0",
+    "electron-log": "2.2.16",
+    "plantuml-encoder" : "^1.2.5",
     "path": "^0.12.7",
     "photon": "github:connors/photon",
     "twemoji": "^2.5.1"

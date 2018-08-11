@@ -128,7 +128,7 @@ gulp.task 'package:win32', ->
 gulp.task 'package:linux', ->
   packageElectron {
     platform: 'linux'
-    arch: 'ia32,x64'
+    arch: 'x64'
   }
 gulp.task 'package:darwin', ->
   packageElectron {
