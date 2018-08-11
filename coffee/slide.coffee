@@ -14,7 +14,6 @@ document.addEventListener 'DOMContentLoaded', ->
         $(@).attr(target, resolvePathFromMarp($(@).attr(target)))
 
     Markdown = new clsMarkdown({ afterRender: clsMarkdown.generateAfterRender($) })
-
     themes = {}
     themes.current = -> $('#theme-css').attr('href')
     themes.default = themes.current()

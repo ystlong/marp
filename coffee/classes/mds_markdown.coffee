@@ -4,12 +4,15 @@ extend       = require 'extend'
 markdownIt   = require 'markdown-it'
 Path         = require 'path'
 MdsMdSetting = require './mds_md_setting'
+plantuml_encoder = require "plantuml-encoder"
 {exist}      = require './mds_file'
 
 module.exports = class MdsMarkdown
   @slideTagOpen:  (page) -> '<div class="slide_wrapper" id="' + page + '"><div class="slide"><div class="slide_bg"></div><div class="slide_inner">'
   @slideTagClose: (page) -> '</div><footer class="slide_footer"></footer><span class="slide_page" data-page="' + page + '">' + page + '</span></div></div>'
 
+  plantumlServerUrl: "http://www.plantuml.com/plantuml"
+  
   @highlighter: (code, lang) ->
     if lang?
       if lang == 'text' or lang == 'plain'
@@ -20,6 +23,9 @@ module.exports = class MdsMarkdown
 
     highlightJs.highlightAuto(code).value
 
+
+  
+
   @default:
     options:
       html: true
@@ -28,7 +34,20 @@ module.exports = class MdsMarkdown
       linkify: true
       highlight: @highlighter
 
+
     plugins:
+      'markdown-it-plantuml' : {
+        openMarker: '```plantuml'
+        closeMarker: '```'
+        generateSource: (umlCode) ->
+          return MdsMarkdown.plantumlServerUrl + "/" + plantuml_encoder.encode(umlCode)
+        render: (tokens, idx, options, env, slf) ->
+          token = tokens[idx];
+
+          token.attrs[token.attrIndex('alt')][1] = slf.renderInlineAsText(token.children, options, env);
+
+          return slf.renderToken(tokens, idx, options).replace("<", "")
+      }
       'markdown-it-mark': {}
       'markdown-it-emoji':
         shortcuts: {}
@@ -99,6 +118,7 @@ module.exports = class MdsMarkdown
   afterRender: null
   twemojiOpts: {}
 
+
   constructor: (settings) ->
     opts         = extend({}, MdsMarkdown.default.options, settings?.options || {})
     plugins      = extend({}, MdsMarkdown.default.plugins, settings?.plugins || {})
@@ -106,6 +126,7 @@ module.exports = class MdsMarkdown
     @afterRender = settings?.afterRender || null
     @markdown    = MdsMarkdown.createMarkdownIt.call(@, opts, plugins)
     @afterCreate()
+
 
   afterCreate: =>
     md      = @markdown
@@ -132,6 +153,7 @@ module.exports = class MdsMarkdown
         defaultRenderers.html_block.apply(@, args)
 
   parse: (markdown) =>
+    @plantumlServerUrl = "xxxxx"
     @_rulers          = []
     @_settings        = new MdsMdSetting
     @settingsPosition = []

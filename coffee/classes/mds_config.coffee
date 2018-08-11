@@ -23,6 +23,8 @@ class MdsConfig
       width: 1000
       height: 420
       maximized: false
+    plantuml:
+      serverUrl: 'http://www.plantuml.com/plantuml/svg'
 
   constructor: ->
     return instance if instance?
